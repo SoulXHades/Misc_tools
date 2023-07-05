@@ -42,6 +42,7 @@
         }
     }
 
+    // Do all these only if the user is in the booking page
     if (window.location.href.indexOf("/booking/chooseSlot") > -1) {
         // Reload every 25 seconds
         reloadTimeoutId = setTimeout(reloadPage, reload_duration);
