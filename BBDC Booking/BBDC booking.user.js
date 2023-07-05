@@ -1,10 +1,9 @@
 // ==UserScript==
 // @name        BBDC booking
 // @author      lamecarrot
-// @version    	1.0
+// @version    	1.0.1
 // @namespace   https://lamecarrot.wordpress.com/
-// @description asd
-// @include		*://*.booking.bbdc.sg/*
+// @description Notify user via browser alert if there are slots available for booking.
 // @match		*://*.booking.bbdc.sg/*
 // ==/UserScript==
 
@@ -43,8 +42,10 @@
         }
     }
 
-    // Reload every 25 seconds
-    reloadTimeoutId = setTimeout(reloadPage, reload_duration);
-    // Delay the check by 12 seconds after page load
-    setTimeout(checkAndNotify, 12000);
+    if (window.location.href.indexOf("/booking/chooseSlot") > -1) {
+        // Reload every 25 seconds
+        reloadTimeoutId = setTimeout(reloadPage, reload_duration);
+        // Delay the check by 12 seconds after page load
+        setTimeout(checkAndNotify, 12000);
+    }
 })();

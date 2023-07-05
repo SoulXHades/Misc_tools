@@ -4,6 +4,9 @@ This UserScript script was created for Bukit Batok Driving Center (BBDC)'s booki
 # Requirement
 As this is a UserScript, it needs browser extension such as TamperMonkey, https://www.tampermonkey.net/, to execute it. TamperMonkey is available in the extension store for both Firefox and Google Chrome.
 
+# Features
+* Notify you if there are any slots available in the booking page.
+
 # Usage
 1. Install TamperMonkey from your browser extension store.
 2. Add this script into TamperMonkey and enable it if need to.
