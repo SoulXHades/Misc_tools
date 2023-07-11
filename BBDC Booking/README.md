@@ -1,6 +1,6 @@
 # The script
 This UserScript script was created for Bukit Batok Driving Center (BBDC)'s booking session especially practical booking. This script will notify you if there is an available slot to be booked. Currently, this script has very basic features which will inform you via your browser notification if any slots are available. I might increase the number of features if I feel motivated to code.
-<img src="README_IMAGES/overview.png">
+<img src="README_IMAGES/overview.PNG">
 
 # Requirement
 As this is a UserScript, it needs browser extension such as TamperMonkey, https://www.tampermonkey.net/, to execute it. TamperMonkey is available in the extension store for both Firefox and Google Chrome.
