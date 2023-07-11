@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name        BBDC booking
 // @author      lamecarrot
-// @version    	1.1.0
+// @version    	1.1.1
 // @namespace   https://lamecarrot.wordpress.com/
-// @description Notify user via browser alert if there are slots available for booking. User maybe choose the date range they are interested in.
+// @description Notify user via browser alert if there are slots available for booking. User maybe choose the date range they are interested in (months only for now). User may also choose to stop refreshing.
 // @match		*://*.booking.bbdc.sg/*
 // ==/UserScript==
 
@@ -31,11 +31,11 @@
 
     // Create or restore user preference
     function createOrRestoreUserPreference() {
-        var dateRangeDiv = document.createElement('div');
-        dateRangeDiv.id = 'userPreference';
-        dateRangeDiv.style.background = '#e0e0e0';
-        dateRangeDiv.style.padding = '20px';
-        dateRangeDiv.innerHTML = `
+        var userPreferenceDiv = document.createElement('div');
+        userPreferenceDiv.id = 'userPreference';
+        userPreferenceDiv.style.background = '#e0e0e0';
+        userPreferenceDiv.style.padding = '15px';
+        userPreferenceDiv.innerHTML = `
             <label for="start">Start Date:</label>
             <input type="date" id="start" name="start">
             <label for="end">End Date:</label>
@@ -43,16 +43,40 @@
             <label for="end">Refresh duration in seconds:</label>
             <input type="number" id="refreshduration" name="refreshduration" min="5" value=5 style="width: 5em">
             <button id="save">Save</button>
+            <button id="stopRefresh">Stop refreshing</button>
         `;
 
         // To place this at the top of the page, we will need to find the right element without page's own CSS messes things up
         var containerDiv = document.querySelector('.container.container--fluid');
         if (containerDiv) {
-            containerDiv.insertBefore(dateRangeDiv, containerDiv.firstChild);
+            containerDiv.insertBefore(userPreferenceDiv, containerDiv.firstChild);
         }
 
         var saveButton = document.getElementById('save');
         saveButton.addEventListener('click', saveDateRange);
+        // Save button's design
+        saveButton.style.margin = "10px";
+        saveButton.style.padding = "3px .3em";
+        saveButton.style.border = "1px solid transparent";
+        saveButton.style.borderRadius = "5px";
+        saveButton.style.color = "#fff";
+        saveButton.style.backgroundColor = "#0095ff";
+        saveButton.style.display = "inline-block";
+        saveButton.style.outline = "none";
+        saveButton.style.boxShadow = "rgba(255, 255, 255, .4) 0 1px 0 0 inset";
+
+        var stopRefreshButton = document.getElementById('stopRefresh');
+        stopRefreshButton.addEventListener('click', stopRefreshing);
+        // Stop refresing's button's design
+        stopRefreshButton.style.margin = "10px";
+        stopRefreshButton.style.padding = "3px .3em";
+        stopRefreshButton.style.border = "1px solid transparent";
+        stopRefreshButton.style.borderRadius = "5px";
+        stopRefreshButton.style.color = "#fff";
+        stopRefreshButton.style.backgroundColor = "#FF4742";
+        stopRefreshButton.style.display = "inline-block";
+        stopRefreshButton.style.outline = "none";
+        stopRefreshButton.style.boxShadow = "rgba(255, 255, 255, .4) 0 1px 0 0 inset";
 
         // Retrieve and populate the saved date range
         var savedData = localStorage.getItem('user_preference');
@@ -88,6 +112,21 @@
         reload_duration = parseInt(refreshDurationInput.value) * 1000;
         clearTimeout(reloadTimeoutId);
         reloadTimeoutId = setTimeout(reloadPage, reload_duration);
+
+        // Enable stop refresh button
+        var stopRefreshButton = document.getElementById('stopRefresh');
+        stopRefreshButton.disabled = false;
+        stopRefreshButton.style.backgroundColor = "#FF4742";
+    }
+
+    // Stop all timeout that leads to refreshing the page
+    function stopRefreshing() {
+        clearTimeout(checkSlotsAndNotifyTimeoutId);
+        clearTimeout(reloadTimeoutId);
+        // Disable button
+        var stopRefreshButton = document.getElementById('stopRefresh');
+        stopRefreshButton.disabled = true;
+        stopRefreshButton.style.backgroundColor = "#B30000";
     }
 
     // Show notification
