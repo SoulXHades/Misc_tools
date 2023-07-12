@@ -23,9 +23,9 @@ As this is a UserScript, it needs browser extension such as TamperMonkey, https:
 4. Once enabled, refresh the page by pressing F5.
 5. In the left end of your URL search bar, press the pop-up bubble and allow notification.
 6. If there are slots available, notification should appear on the right on your computer.
+<p align="center"><img src="README_IMAGES/notification.png" width="400"></p>
 7. Press the "Stop refreshing" button before booking any slots.
 8. You may select the date range that you would like to be notified of any available slots.
 9. You may also change the refresh rate.
    * Minimum is 5 seconds to prevent server from timeout us.
-
 <p align="center"><img src="README_IMAGES/userPreference.PNG" width="600"></p>

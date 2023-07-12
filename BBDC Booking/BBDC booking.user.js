@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        BBDC booking
 // @author      lamecarrot
-// @version    	1.1.1
+// @version    	1.1.2
 // @namespace   https://lamecarrot.wordpress.com/
 // @description Notify user via browser alert if there are slots available for booking. User maybe choose the date range they are interested in (months only for now). User may also choose to stop refreshing.
 // @match		*://*.booking.bbdc.sg/*
@@ -131,7 +131,7 @@
 
     // Show notification
     function showNotification(available_months) {
-        var notificationBody = 'Months with slots: ' + available_months.join('\n');
+        var notificationBody = 'Months with slots: ' + available_months.join(', ');
         var notification = new Notification('BBDC booking', {
             body: notificationBody
         });
@@ -148,7 +148,7 @@
         var parts = buttonText.split("'");
         var month = parts[0];
         var year = "20" + parts[1];
-        return new Date(year, getMonthIndex(month));
+        return new Date(year, getMonthIndex(month.toUpperCase())).setHours(0, 0, 0, 0);
     }
 
     // Check for the div element and send notification if it has child elements which means have slots for booking
@@ -164,19 +164,23 @@
                 var buttonText = month_button.querySelector('.v-btn__content').innerHTML.trim();
                 available_months.push(buttonText);
             });
+            var startDate_dateFormat = new Date(userPreference.startDate.slice(0, -3)).setHours(0, 0, 0, 0); // Slice day away for now until implement compare exact date
+            var endDate_dateFormat = new Date(userPreference.endDate.slice(0, -3)).setHours(0, 0, 0, 0); // Slice day away for now until implement compare exact date
             var notificationTexts = available_months.filter(function(buttonText) {
-                var buttonDate = parseButtonDate(buttonText);
-                return buttonDate >= userPreference.startDate && buttonDate <= userPreference.endDate;
+                var buttonDate = parseButtonDate(buttonText); // Parse like "Jul'23" to Date() object
+                console.log("Button date: " + buttonDate);
+                console.log("Start date: " + startDate_dateFormat);
+                console.log("End date: " + endDate_dateFormat);
+                return buttonDate >= startDate_dateFormat && buttonDate <= endDate_dateFormat; // Compare by exact date
             });
-            showNotification(available_months);
-            // If have slot, reset & increase reload interval to 1 min so that user have time to off the script if there are actually slots and user wants to book
-            reload_duration = 60*1000;
-            reloadTimeoutId = setTimeout(reloadPage, reload_duration); // Set the new timeout to reload the page
+            if (Array.isArray(notificationTexts) && notificationTexts.length) {
+                showNotification(notificationTexts);
+                // If have slot, reset & increase reload interval to 1 min so that user have time to off the script if there are actually slots and user wants to book
+                reload_duration = 60*1000;
+            }
         }
-        else {
-            // Reload since there are no slots available
-            reloadTimeoutId = setTimeout(reloadPage, reload_duration);
-        }
+        // Reload since there are no slots available
+        reloadTimeoutId = setTimeout(reloadPage, reload_duration);
     }
 
     // Check for the overlay div attribute and trigger notification if it meets the criteria
