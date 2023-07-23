@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        BBDC booking
 // @author      lamecarrot
-// @version    	1.1.2
+// @version    	1.1.3
 // @namespace   https://lamecarrot.wordpress.com/
 // @description Notify user via browser alert if there are slots available for booking. User maybe choose the date range they are interested in (months only for now). User may also choose to stop refreshing.
 // @match		*://*.booking.bbdc.sg/*
@@ -18,8 +18,8 @@
 
     // Request permission for notifications
     Notification.requestPermission();
-    // Default reload in 5 sec else too fast and might actually spam the server
-    const MIN_RELOAD_SEC = 5;
+    // Default reload in 2 sec else too fast and might actually spam the server
+    const MIN_RELOAD_SEC = 2;
     var reload_duration = MIN_RELOAD_SEC*1000;
     var reloadTimeoutId;
     var checkSlotsAndNotifyTimeoutId;
@@ -41,7 +41,7 @@
             <label for="end">End Date:</label>
             <input type="date" id="end" name="end">
             <label for="end">Refresh duration in seconds:</label>
-            <input type="number" id="refreshduration" name="refreshduration" min="5" value=5 style="width: 5em">
+            <input type="number" id="refreshduration" name="refreshduration" min="${reload_duration/1000}" value=${reload_duration/1000} style="width: 5em">
             <button id="save">Save</button>
             <button id="stopRefresh">Stop refreshing</button>
         `;
@@ -99,7 +99,7 @@
         var endDateInput = document.getElementById('end');
         var refreshDurationInput = document.getElementById('refreshduration');
 
-        if (parseInt(refreshDurationInput.value) < 5) refreshDurationInput.value = MIN_RELOAD_SEC;
+        if (parseInt(refreshDurationInput.value) < MIN_RELOAD_SEC) refreshDurationInput.value = MIN_RELOAD_SEC;
 
         var userPreference = {
             startDate: startDateInput.value,
@@ -168,9 +168,6 @@
             var endDate_dateFormat = new Date(userPreference.endDate.slice(0, -3)).setHours(0, 0, 0, 0); // Slice day away for now until implement compare exact date
             var notificationTexts = available_months.filter(function(buttonText) {
                 var buttonDate = parseButtonDate(buttonText); // Parse like "Jul'23" to Date() object
-                console.log("Button date: " + buttonDate);
-                console.log("Start date: " + startDate_dateFormat);
-                console.log("End date: " + endDate_dateFormat);
                 return buttonDate >= startDate_dateFormat && buttonDate <= endDate_dateFormat; // Compare by exact date
             });
             if (Array.isArray(notificationTexts) && notificationTexts.length) {
