@@ -1,7 +1,0 @@
-﻿  query_internal_file_info.cpp
-C:\Users\LameCarrot\Downloads\query_internal_file_info\query_internal_file_info\query_internal_file_info.cpp(138,12): warning C4475: 'printf' : length modifier 'll' cannot be used with type field character 'p' in format specifier
-  Generating code
-  Previous IPDB not found, fall back to full compilation.
-  All 5 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
-  Finished generating code
-  query_internal_file_info.vcxproj -> C:\Users\LameCarrot\Downloads\query_internal_file_info\x64\Release\query_internal_file_info.exe
