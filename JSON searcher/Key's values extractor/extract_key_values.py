@@ -54,8 +54,7 @@ def extract_value(data, key_arg: str) -> set:
 if __name__ == "__main__":
     args = initialize_parser()
     vals = find_key(args.folderpath, args.key)
-    print(len(vals))
 
-    print("Found values:")
+    print("\nFound {} unique values:".format(len(vals)))
     for val in vals:
         print(val)
